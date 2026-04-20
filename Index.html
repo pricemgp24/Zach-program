@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZACH'S PROGRAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080f08;--bg2:#0d160d;--bg3:#121f12;--border:#1e3020;
+    --text:#e8f5e8;--muted:#7aaa7a;--dim:#3a5a3a;
+    --g1:#4cdd6e;--g2:#2eb84e;--g3:#1a8a38;
+    --g-light:#a0f0b0;--g-glow:rgba(76,221,110,0.15);
+    --gold:#d4b478;--red:#e05050;--blue:#6ab0e0;--orange:#e08840;
+    --white:#f0fff0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding-bottom:80px;}
+
+  /* COVER */
+  .cover{background:linear-gradient(145deg,#071207 0%,#0a180a 60%,#080f08 100%);border-bottom:2px solid var(--g3);padding:28px 20px 22px;position:relative;overflow:hidden;}
+  .cover::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(76,221,110,0.12) 0%,transparent 70%);border-radius:50%;}
+  .cover::after{content:'🏈';position:absolute;right:20px;top:28px;font-size:52px;opacity:0.15;}
+  .cover .eyebrow{font-size:10px;letter-spacing:5px;color:var(--g1);font-weight:700;margin-bottom:6px;text-transform:uppercase;position:relative;z-index:1;}
+  .cover h1{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;margin-bottom:4px;position:relative;z-index:1;letter-spacing:2px;}
+  .cover h1 span{color:var(--g1);}
+  .cover .sub{font-size:12px;color:var(--muted);line-height:1.7;position:relative;z-index:1;margin-bottom:16px;}
+  .stat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:relative;z-index:1;}
+  .ss-pill{background:rgba(76,221,110,0.08);border:1px solid rgba(76,221,110,0.2);border-radius:6px;padding:8px 6px;text-align:center;}
+  .ss-pill .sv{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--g1);line-height:1;}
+  .ss-pill .sl{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+  /* WEEK NAV */
+  .week-nav{display:flex;align-items:center;gap:12px;background:var(--bg2);padding:10px 16px;border-bottom:1px solid var(--border);}
+  .week-nav button{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+  .wl{flex:1;text-align:center;}
+  .wl-main{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--g1);}
+  .wl-sub{font-size:10px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;}
+
+  /* WEEK PROGRESS */
+  .week-prog{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .wp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .wp-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .wp-cnt{font-size:12px;color:var(--g1);font-weight:700;}
+  .wp-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .wp-fill{height:100%;background:linear-gradient(90deg,var(--g3),var(--g1));border-radius:3px;transition:width 0.4s;}
+  .wp-dots{display:flex;gap:4px;margin-top:12px;}
+  .wp-dot{flex:1;height:7px;border-radius:3px;background:var(--border);transition:background 0.2s;position:relative;}
+  .wp-dot.done{background:var(--g1);}
+  .wp-dot.jj{background:rgba(106,176,224,0.4);}
+  .wp-dot.rest{background:var(--dim);opacity:0.4;}
+  .wp-dot span{position:absolute;top:11px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--muted);white-space:nowrap;}
+
+  /* DAY BAR */
+  .day-bar{display:flex;overflow-x:auto;background:var(--bg2);border-bottom:1px solid var(--border);scrollbar-width:none;}
+  .day-bar::-webkit-scrollbar{display:none;}
+  .dbt{padding:10px 14px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.15s;flex-shrink:0;text-transform:uppercase;background:none;border-left:none;border-right:none;border-top:none;font-family:'DM Sans',sans-serif;}
+  .dbt.active{color:var(--g1);border-bottom-color:var(--g1);}
+  .dbt.done-d{color:var(--g2);}
+  .dbt.jj-d{color:var(--blue);}
+  .dbt.jj-d.active{color:var(--blue);border-bottom-color:var(--blue);}
+
+  /* TABS */
+  .tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);}
+  .tab{flex:1;padding:11px 8px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;text-transform:uppercase;font-family:'DM Sans',sans-serif;background:none;border-left:none;border-right:none;border-top:none;text-align:center;}
+  .tab.active{color:var(--g1);border-bottom-color:var(--g1);}
+
+  .page{display:none;padding:14px 16px;}
+  .page.active{display:block;}
+
+  .sec{font-size:10px;font-weight:700;letter-spacing:4px;color:var(--dim);padding:14px 0 8px;display:flex;align-items:center;gap:8px;text-transform:uppercase;}
+  .sec::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* DAY HEADER */
+  .day-hdr{background:linear-gradient(135deg,var(--bg3) 0%,#0a1e0a 100%);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+  .dh-label{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:2px;}
+  .dh-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--g-light);}
+  .dh-dur{font-size:12px;color:var(--muted);font-family:monospace;text-align:right;}
+  .mark-btn{margin-top:6px;padding:7px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;display:block;}
+  .mark-btn.done{background:var(--g3);border-color:var(--g1);color:var(--g-light);}
+
+  /* JJ DAY */
+  .jj-card{background:linear-gradient(135deg,#080f18 0%,#0d1620 100%);border:1px solid rgba(106,176,224,0.3);border-radius:10px;padding:20px 16px;margin-bottom:10px;}
+  .jj-card .jj-icon{font-size:32px;margin-bottom:8px;}
+  .jj-card h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--blue);margin-bottom:6px;}
+  .jj-card .jj-type{font-size:11px;letter-spacing:3px;color:var(--blue);opacity:0.7;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+  .jj-card p{font-size:14px;color:var(--muted);line-height:1.7;}
+  .jj-focus{background:rgba(106,176,224,0.08);border:1px solid rgba(106,176,224,0.2);border-radius:8px;padding:10px 12px;margin-top:10px;}
+  .jj-focus .jf-title{font-size:10px;letter-spacing:3px;color:var(--blue);font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+  .jj-item{font-size:14px;color:var(--text);padding:3px 0;display:flex;align-items:center;gap:8px;}
+  .jj-item::before{content:'◆';color:var(--blue);font-size:8px;}
+
+  /* REST DAY */
+  .rest-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px 20px;text-align:center;margin-bottom:8px;}
+  .rest-card .ri{font-size:36px;margin-bottom:10px;}
+  .rest-card h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--g1);margin-bottom:8px;}
+  .rest-card p{font-size:14px;color:var(--muted);line-height:1.8;}
+
+  /* WARMUP */
+  .wu-box{background:rgba(212,180,120,0.08);border:1px solid rgba(212,180,120,0.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;}
+  .wu-title{font-size:10px;letter-spacing:3px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px;}
+  .wu-item{font-size:14px;color:var(--text);padding:4px 0;display:flex;align-items:center;gap:8px;}
+  .wu-item::before{content:'›';color:var(--gold);font-size:18px;}
+
+  /* BLOCK LABEL */
+  .block-lbl{font-size:10px;letter-spacing:3px;color:var(--g-light);font-weight:700;text-transform:uppercase;margin:12px 0 6px;display:flex;align-items:center;gap:8px;}
+  .block-lbl::after{content:'';flex:1;height:1px;background:rgba(76,221,110,0.15);}
+
+  /* EXERCISE CARD */
+  .ex-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  .ex-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border);}
+  .ex-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+  .ex-target{font-size:12px;color:var(--g1);font-family:monospace;letter-spacing:1px;font-weight:600;}
+  .ex-note{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6;}
+  .pr-badge{font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;border-radius:4px;background:rgba(212,180,120,0.2);color:var(--gold);margin-left:6px;display:none;}
+  .pr-badge.show{display:inline;}
+
+  /* SET LOGGER */
+  .set-log{padding:8px 14px 10px;}
+  .col-hdr{display:grid;grid-template-columns:30px 1fr 1fr 72px 30px;gap:5px;margin-bottom:5px;}
+  .col-hdr span{font-size:10px;letter-spacing:2px;color:var(--muted);text-align:center;text-transform:uppercase;font-weight:700;}
+  .set-r{display:grid;grid-template-columns:30px 1fr 1fr 72px 30px;gap:5px;align-items:center;margin-bottom:5px;}
+  .s-num{font-size:13px;color:var(--muted);font-family:monospace;text-align:center;background:var(--bg3);border-radius:4px;padding:7px 0;font-weight:700;}
+  .s-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:15px;padding:6px 4px;font-family:'DM Sans',sans-serif;width:100%;text-align:center;transition:border-color 0.15s;font-weight:600;}
+  .s-input:focus{outline:none;border-color:var(--g1);}
+  .s-input::placeholder{color:var(--dim);font-size:12px;}
+  .prev-col{font-size:12px;color:var(--g-light);text-align:center;font-family:monospace;padding:7px 4px;background:var(--bg3);border-radius:6px;font-weight:600;}
+  .prev-col.empty{color:var(--dim);}
+  .s-done{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin:0 auto;}
+  .s-done.done{background:var(--g2);border-color:var(--g1);color:var(--bg);}
+  .add-set{width:100%;padding:6px;background:transparent;border:1px dashed var(--border);border-radius:6px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:2px;transition:all 0.15s;}
+  .add-set:active{border-color:var(--g1);color:var(--g1);}
+
+  /* SKILL / AGILITY BLOCK (no weight tracking) */
+  .skill-card{background:var(--bg2);border:1px solid rgba(224,136,64,0.3);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  .skill-hdr{padding:10px 14px 8px;border-bottom:1px solid rgba(224,136,64,0.2);}
+  .skill-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+  .skill-target{font-size:12px;color:var(--orange);font-family:monospace;font-weight:600;}
+  .skill-note{font-size:13px;color:var(--muted);margin-top:5px;line-height:1.6;}
+  .skill-body{padding:10px 14px;}
+  .skill-chk-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(224,136,64,0.1);font-size:14px;color:var(--text);}
+  .skill-chk-row:last-child{border-bottom:none;}
+  .skill-chk-row .sd{font-size:12px;color:var(--muted);}
+  .sk-btn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(224,136,64,0.3);background:transparent;color:transparent;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
+  .sk-btn.done{background:var(--orange);border-color:var(--orange);color:#fff;}
+
+  /* TIME INPUT */
+  .time-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:6px 8px;font-family:'DM Sans',sans-serif;width:80px;text-align:center;}
+  .time-input:focus{outline:none;border-color:var(--g1);}
+
+  /* CONDITIONING BOX */
+  .cond-box{background:rgba(224,80,80,0.07);border:1px solid rgba(224,80,80,0.25);border-radius:8px;padding:12px;margin-top:10px;}
+  .cond-title{font-size:10px;letter-spacing:3px;color:var(--red);font-weight:700;text-transform:uppercase;margin-bottom:8px;}
+  .cond-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px;color:var(--text);border-bottom:1px solid rgba(224,80,80,0.1);}
+  .cond-row:last-child{border-bottom:none;}
+  .cond-row .cd{font-size:12px;color:var(--muted);}
+  .cond-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .cond-btn.done{background:var(--red);border-color:var(--red);color:#fff;}
+
+  /* CARDIO + AGILITY BLOCK */
+  .cardio-block{background:rgba(76,221,110,0.06);border:1px solid rgba(76,221,110,0.25);border-radius:8px;padding:12px;margin-top:10px;}
+  .cb-title{font-size:10px;letter-spacing:3px;color:var(--g1);font-weight:700;text-transform:uppercase;margin-bottom:8px;}
+  .cb-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(76,221,110,0.1);font-size:14px;color:var(--text);}
+  .cb-row:last-child{border-bottom:none;}
+  .cb-row .crd{font-size:12px;color:var(--muted);}
+  .cb-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .cb-btn.done{background:var(--g2);border-color:var(--g1);color:var(--bg);}
+
+  .agility-block{background:rgba(224,136,64,0.06);border:1px solid rgba(224,136,64,0.25);border-radius:8px;padding:12px;margin-top:8px;}
+  .ab-title{font-size:10px;letter-spacing:3px;color:var(--orange);font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+  .ab-sub{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5;}
+  .ab-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(224,136,64,0.1);font-size:14px;color:var(--text);}
+  .ab-row:last-child{border-bottom:none;}
+  .ab-row .ad{font-size:12px;color:var(--muted);}
+  .ab-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .ab-btn.done{background:var(--orange);border-color:var(--orange);color:#fff;}
+
+  /* NOTES INPUT */
+  .notes-area{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;padding:10px;font-family:'DM Sans',sans-serif;resize:none;height:60px;margin-top:8px;}
+  .notes-area:focus{outline:none;border-color:var(--g1);}
+  .notes-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-top:10px;display:block;}
+
+  /* PROGRESS TAB */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+  .sv{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--g1);}
+  .sl{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+
+  .baseline-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+  .baseline-card h4{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--g-light);margin-bottom:10px;}
+  .bl-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-end;}
+  .bl-field{flex:1;}
+  .bl-field label{font-size:10px;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;font-weight:700;}
+  .bl-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:8px 10px;font-family:'DM Sans',sans-serif;}
+  .bl-inp:focus{outline:none;border-color:var(--g1);}
+  .save-btn{width:100%;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--g3),var(--g2));color:var(--bg);font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:6px;letter-spacing:2px;}
+
+  .bench-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+  .bench-card h4{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--g-light);margin-bottom:10px;}
+  .bench-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;}
+  .bench-row:last-child{border-bottom:none;}
+  .bench-row .bk{color:var(--muted);font-weight:500;}
+  .bench-row .bv{font-weight:700;color:var(--g-light);}
+  .bench-row .bs{font-size:12px;color:var(--muted);}
+
+  .hist-entry{background:var(--bg3);border-radius:8px;padding:10px 12px;margin-bottom:6px;}
+  .hist-entry .he-date{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+  .hist-entry .he-vals{display:flex;gap:8px;flex-wrap:wrap;}
+  .hist-entry .hv{font-size:13px;font-weight:700;color:var(--g1);}
+  .hist-entry .hk{font-size:11px;color:var(--muted);}
+
+  /* GUIDE */
+  .g-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;}
+  .g-card h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--g-light);margin-bottom:10px;}
+  .g-item{display:flex;gap:10px;margin-bottom:10px;font-size:14px;line-height:1.7;color:var(--text);align-items:flex-start;}
+  .g-item .gi{color:var(--g1);font-weight:700;flex-shrink:0;min-width:48px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;}
+  .i-row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;gap:10px;}
+  .i-row:last-child{border-bottom:none;}
+  .ik{color:var(--muted);font-weight:500;}
+  .iv{font-weight:700;color:var(--text);font-size:13px;text-align:right;}
+
+  /* PHASE TIMELINE */
+  .phase-timeline{display:flex;gap:0;margin-bottom:16px;border-radius:8px;overflow:hidden;}
+  .pt-block{flex:1;padding:10px 6px;text-align:center;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .pt-block .pt-wk{font-family:'Bebas Neue',sans-serif;font-size:18px;display:block;margin-bottom:2px;}
+  .pt-1{background:rgba(76,221,110,0.12);color:var(--g1);border:1px solid rgba(76,221,110,0.2);}
+  .pt-2{background:rgba(106,176,224,0.12);color:var(--blue);border:1px solid rgba(106,176,224,0.2);}
+  .pt-3{background:rgba(224,136,64,0.12);color:var(--orange);border:1px solid rgba(224,136,64,0.2);}
+  .pt-4{background:rgba(224,80,80,0.12);color:var(--red);border:1px solid rgba(224,80,80,0.2);}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="eyebrow">16-Week Football + BJJ Program</div>
+  <h1>ZACH'S <span>PROGRAM</span></h1>
+  <p class="sub">Age 12 · 119 lbs · TE / Safety / Corner / LB / QB / RB<br>3 days lifting · 2 days Jiu Jitsu · Mon-Gi · Wed-No-Gi</p>
+  <div class="stat-strip">
+    <div class="ss-pill"><div class="sv">75</div><div class="sl">Squat lbs</div></div>
+    <div class="ss-pill"><div class="sv">65</div><div class="sl">Bench lbs</div></div>
+    <div class="ss-pill"><div class="sv">20</div><div class="sl">1.5mi min</div></div>
+    <div class="ss-pill"><div class="sv">36"</div><div class="sl">Box Jump</div></div>
+  </div>
+</div>
+
+<!-- WEEK NAV -->
+<div class="week-nav">
+  <button onclick="changeWeek(-1)">◀</button>
+  <div class="wl">
+    <div class="wl-main" id="wk-lbl">WEEK 1</div>
+    <div class="wl-sub" id="ph-lbl">FOUNDATION PHASE</div>
+  </div>
+  <button onclick="changeWeek(1)">▶</button>
+</div>
+
+<!-- WEEK PROGRESS -->
+<div class="week-prog">
+  <div class="wp-row">
+    <span class="wp-lbl">Weekly Progress</span>
+    <span class="wp-cnt" id="wpc">0 / 5 active days</span>
+  </div>
+  <div class="wp-bar"><div class="wp-fill" id="wpf" style="width:0%"></div></div>
+  <div class="wp-dots" id="wpd" style="margin-top:14px"></div>
+</div>
+
+<!-- DAY BAR -->
+<div class="day-bar">
+  <button class="dbt jj-d active" onclick="showDay('mon',this)" id="dtb-mon">MON</button>
+  <button class="dbt" onclick="showDay('tue',this)" id="dtb-tue">TUE</button>
+  <button class="dbt jj-d" onclick="showDay('wed',this)" id="dtb-wed">WED</button>
+  <button class="dbt" onclick="showDay('thu',this)" id="dtb-thu">THU</button>
+  <button class="dbt" onclick="showDay('fri',this)" id="dtb-fri">FRI</button>
+  <button class="dbt" onclick="showDay('sat',this)" id="dtb-sat">SAT</button>
+  <button class="dbt" onclick="showDay('sun',this)" id="dtb-sun">SUN</button>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('workout',this)">WORKOUT</button>
+  <button class="tab" onclick="showTab('progress',this)">PROGRESS</button>
+  <button class="tab" onclick="showTab('guide',this)">GUIDE</button>
+</div>
+
+<div class="page active" id="tab-workout">
+
+<!-- ═══ MONDAY — JJ GI ═══ -->
+<div id="day-mon">
+  <div class="jj-card">
+    <div class="jj-icon">🥋</div>
+    <div class="jj-type">Jiu Jitsu — Gi Class</div>
+    <h3>MONDAY TRAINING</h3>
+    <p>Full BJJ session. Stay late — sister has adult class after. No lifting today. JJ is your conditioning and coordination work for the day.</p>
+  </div>
+  <div class="jj-focus">
+    <div class="jf-title">Focus Points by Phase</div>
+    <div class="jj-item">Wks 1–4: Learn base positions — guard, mount, side control</div>
+    <div class="jj-item">Wks 5–8: Escapes and transitions — don't just survive, move</div>
+    <div class="jj-item">Wks 9–12: Submissions from position — arm bar, triangle, RNC</div>
+    <div class="jj-item">Wks 13–16: Chain attacks — link techniques together fluidly</div>
+  </div>
+  <div class="cond-box" style="margin-top:12px">
+    <div class="cond-title">Session Log</div>
+    <div class="cond-row"><div><div>JJ Class Completed</div><div class="cd">Mark when done — sister's class starts now</div></div><button class="cond-btn" onclick="toggleCond(this);markDay('mon')">DONE</button></div>
+  </div>
+
+  <div class="agility-block" style="margin-top:10px">
+    <div class="ab-title">🚗 Parking Lot — While Sister's In Class</div>
+    <div class="ab-sub">You've got 45–60 min. Use the parking lines as cones — they're about 8–9 ft apart. This is agility and football skill work, not sprint training. Keep intensity moderate — you just did JJ.</div>
+    <div class="ab-row"><div><div>Lateral shuffle along lines</div><div class="ad">Down and back 5× · Face forward · Stay low</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Backpedal → burst</div><div class="ad">Backpedal 10 yd → react → sprint 10 yd · ×8</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Carioca down the line</div><div class="ad">2×40 yards each direction · Hip rotation and crossover steps</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>High knee run + burst</div><div class="ad">High knees 10 yd → full sprint 20 yd · ×6</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Snap count release drill</div><div class="ad">Line up on a crack, react to your own hike count, run route · ×10</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Catch 30 balls (if Dad is there)</div><div class="ad">Any route, full speed, hands only — no body catches</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+</div>
+
+<!-- ═══ TUESDAY — STRENGTH ═══ -->
+<div id="day-tue" style="display:none">
+  <div class="day-hdr">
+    <div><div class="dh-label">Tuesday · Day 1</div><div class="dh-name">STRENGTH DAY</div></div>
+    <div><div class="dh-dur">~50 min</div><button class="mark-btn" id="mb-tue" onclick="markDay('tue')">MARK DONE</button></div>
+  </div>
+
+  <div class="wu-box">
+    <div class="wu-title">⚡ Dynamic Warmup — 8 Min</div>
+    <div class="wu-item">Jog 200m or jump rope 2 min</div>
+    <div class="wu-item">Leg swings front-back 10 each leg</div>
+    <div class="wu-item">Arm circles 20 forward / 20 backward</div>
+    <div class="wu-item">Hip circles 10 each direction</div>
+    <div class="wu-item">Bodyweight squat 2×10 — slow and full range</div>
+    <div class="wu-item">Light bar warmup set on first exercise before working sets</div>
+  </div>
+
+  <div class="block-lbl">Main Lifts</div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Back Squat <span class="pr-badge" id="pr-tue-squat">🏆 PR</span></div>
+      <div class="ex-target" id="tgt-tue-squat">Wk1–4: 3×6–8 @ 60–70% · Wk5–8: 4×5–6 · Wk9–12: 4×4–5 · Wk13–16: 3×3 heavy</div>
+      <div class="ex-note">Full depth, chest up, knees track toes. Start at 75lbs and add weight when you hit top of rep range on all 3 sets. Never sacrifice form for weight.</div>
+    </div>
+    <div class="set-log" id="sl-tue-squat"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Barbell Bench Press <span class="pr-badge" id="pr-tue-bench">🏆 PR</span></div>
+      <div class="ex-target">3×6–8 · Start at 65lbs → add 5lbs when hitting top of range</div>
+      <div class="ex-note">Spotter required. Bar to chest, controlled down, drive up. Feet flat on floor. No bouncing off chest.</div>
+    </div>
+    <div class="set-log" id="sl-tue-bench"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Deadlift (Conventional) <span class="pr-badge" id="pr-tue-dl">🏆 PR</span></div>
+      <div class="ex-target">3×5–6 · Start at 65lbs · Add 5–10lbs when ready</div>
+      <div class="ex-note">Hips back, bar over mid-foot, chest tall. Drive through the floor — don't pull with your back. This builds the most total body strength of any lift.</div>
+    </div>
+    <div class="set-log" id="sl-tue-dl"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="block-lbl">Accessory</div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">DB Row <span class="pr-badge" id="pr-tue-row">🏆 PR</span></div>
+      <div class="ex-target">3×8–10 each arm · Moderate DB</div>
+      <div class="ex-note">Knee on bench, big range of motion. Pull elbow to hip. This builds the pulling strength you need for JJ and blocking at TE.</div>
+    </div>
+    <div class="set-log" id="sl-tue-row"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Pull-Up / Band-Assisted Pull-Up <span class="pr-badge" id="pr-tue-pu">🏆 PR</span></div>
+      <div class="ex-target">3×max reps · Use band if needed · Track total reps</div>
+      <div class="ex-note">Dead hang at bottom every rep. Full range. When you can do 3 sets of 8 bodyweight, remove the band. Goal: 15 unbroken by week 16.</div>
+    </div>
+    <div class="set-log" id="sl-tue-pu"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="cond-box">
+    <div class="cond-title">Conditioning Finisher</div>
+    <div class="cond-row"><div><div>Plank Hold</div><div class="cd">3×30–60 sec — beat last week</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cond-row"><div><div>Push-Up 3×Max</div><div class="cd">Perfect form — log total reps</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+
+  <div class="cardio-block">
+    <div class="cb-title">🏃 Cardio — 20 Min</div>
+    <div class="cb-row"><div><div>Treadmill or outdoor run</div><div class="crd">Conversational pace — Zone 2 · Wks 1–4</div></div><button class="cb-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cb-row"><div><div>Wks 5–8: Add intervals</div><div class="crd">16 min easy + 4×30 sec hard bursts</div></div><span style="font-size:11px;color:var(--muted)">upgrade</span></div>
+    <div class="cb-row"><div><div>Wks 9–16: Tempo run</div><div class="crd">20 min at comfortably hard pace — push it</div></div><span style="font-size:11px;color:var(--muted)">upgrade</span></div>
+  </div>
+
+  <span class="notes-label">Session Notes</span>
+  <textarea class="notes-area" id="notes-tue" placeholder="How did it go? Anything to remember next week..."></textarea>
+</div>
+
+<!-- ═══ WEDNESDAY — JJ NO GI ═══ -->
+<div id="day-wed" style="display:none">
+  <div class="jj-card">
+    <div class="jj-icon">🥋</div>
+    <div class="jj-type">Jiu Jitsu — No-Gi Class</div>
+    <h3>WEDNESDAY TRAINING</h3>
+    <p>No-Gi session. No lapels — grip fighting, wrestling ties, body locks matter more here. This transfers directly to football — hip control, leverage, takedown defense.</p>
+  </div>
+  <div class="jj-focus">
+    <div class="jf-title">No-Gi ↔ Football Connections</div>
+    <div class="jj-item">Sprawl → defensive back shed block technique</div>
+    <div class="jj-item">Double leg defense → RB breaking through the line</div>
+    <div class="jj-item">Underhook battle → TE blocking hand fighting</div>
+    <div class="jj-item">Hip escape → linebacker pursuit angles</div>
+  </div>
+  <div class="cond-box" style="margin-top:12px">
+    <div class="cond-title">Session Log</div>
+    <div class="cond-row"><div><div>JJ Class Completed</div><div class="cd">Sister's adult class starts — parking lot time</div></div><button class="cond-btn" onclick="toggleCond(this);markDay('wed')">DONE</button></div>
+  </div>
+
+  <div class="agility-block" style="margin-top:10px">
+    <div class="ab-title">🚗 Parking Lot — While Sister's In Class</div>
+    <div class="ab-sub">Wednesday parking lot is speed and explosiveness. You're mid-week — more gas in the tank than Monday. Push harder on these. Use parking lines as markers.</div>
+    <div class="ab-row"><div><div>Flying 20s</div><div class="ad">Build speed 20 yd → full sprint 20 more → walk back · ×5</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Zigzag pattern run</div><div class="ad">Sprint diagonals across parking lines — 6 lines × 4 sets</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Reaction shuffle — Dad calls direction</div><div class="ad">Dad calls L or R → shuffle immediately · ×10 each</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Broad jump → sprint</div><div class="ad">2 broad jumps → immediately sprint full speed 20 yd · ×5</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Position pursuit drill</div><div class="ad">Safety: Dad throws ahead → run it down at full speed · ×8</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="ab-row"><div><div>Catch 30 balls (if Dad is there)</div><div class="ad">Full speed routes — contested catches, one-handed, deep ball</div></div><button class="ab-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+</div>
+
+<!-- ═══ THURSDAY — SPEED + AGILITY ═══ -->
+<div id="day-thu" style="display:none">
+  <div class="day-hdr">
+    <div><div class="dh-label">Thursday · Day 2</div><div class="dh-name">SPEED + AGILITY</div></div>
+    <div><div class="dh-dur">~50 min</div><button class="mark-btn" id="mb-thu" onclick="markDay('thu')">MARK DONE</button></div>
+  </div>
+
+  <div class="wu-box">
+    <div class="wu-title">⚡ Speed Warmup — 8 Min</div>
+    <div class="wu-item">High knees 4×20 yards</div>
+    <div class="wu-item">Butt kicks 4×20 yards</div>
+    <div class="wu-item">A-skip 3×20 yards — knee drive focused</div>
+    <div class="wu-item">Lateral shuffle 3×10 yards each direction</div>
+    <div class="wu-item">3 stride-out sprints at 70% — not full speed yet</div>
+  </div>
+
+  <div class="block-lbl">Sprint Work — Record All Times</div>
+
+  <div class="skill-card">
+    <div class="skill-hdr">
+      <div class="skill-name">40-Yard Dash <span class="pr-badge" id="pr-thu-40" style="background:rgba(224,136,64,0.2);color:var(--orange);">⚡ FAST</span></div>
+      <div class="skill-target">4–6 reps · Full rest between · Record best time</div>
+      <div class="skill-note">3-point stance. Stay low first 10 yards. Arms drive hard at 90°. Eyes forward not at finish line. Rest 2–3 min between reps.</div>
+    </div>
+    <div class="skill-body">
+      <div class="skill-chk-row">
+        <div><div>Rep 1</div><div class="sd">Best time:</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="time-input" type="text" placeholder="0.00s" id="t40-1" oninput="save40(1,this.value)">
+          <button class="sk-btn" onclick="toggleSkill(this)"></button>
+        </div>
+      </div>
+      <div class="skill-chk-row">
+        <div><div>Rep 2</div><div class="sd">Match or beat rep 1:</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="time-input" type="text" placeholder="0.00s" id="t40-2" oninput="save40(2,this.value)">
+          <button class="sk-btn" onclick="toggleSkill(this)"></button>
+        </div>
+      </div>
+      <div class="skill-chk-row">
+        <div><div>Rep 3</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="time-input" type="text" placeholder="0.00s" id="t40-3" oninput="save40(3,this.value)">
+          <button class="sk-btn" onclick="toggleSkill(this)"></button>
+        </div>
+      </div>
+      <div class="skill-chk-row">
+        <div><div>Rep 4</div><div class="sd">Wks 5+: add reps 4–6</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="time-input" type="text" placeholder="0.00s" id="t40-4" oninput="save40(4,this.value)">
+          <button class="sk-btn" onclick="toggleSkill(this)"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block-lbl">Agility Drills — Timed</div>
+
+  <div class="skill-card">
+    <div class="skill-hdr">
+      <div class="skill-name">5-10-5 Pro Agility Shuttle</div>
+      <div class="skill-target">4 timed reps · Rest 90 sec between</div>
+      <div class="skill-note">Start straddling middle cone. Sprint 5yd right, touch. Sprint 10yd left, touch. Sprint 5yd back through middle. Stay LOW on the turns — don't stand up.</div>
+    </div>
+    <div class="skill-body">
+      <div class="skill-chk-row"><div><div>Rep 1</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="t515-1" oninput="saveTime('515',1,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+      <div class="skill-chk-row"><div><div>Rep 2</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="t515-2" oninput="saveTime('515',2,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+      <div class="skill-chk-row"><div><div>Rep 3</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="t515-3" oninput="saveTime('515',3,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+      <div class="skill-chk-row"><div><div>Rep 4</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="t515-4" oninput="saveTime('515',4,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+    </div>
+  </div>
+
+  <div class="skill-card">
+    <div class="skill-hdr">
+      <div class="skill-name">T-Drill</div>
+      <div class="skill-target">3 reps each direction · Timed</div>
+      <div class="skill-note">Sprint to middle cone, shuffle left 5yd, shuffle right 10yd, shuffle left 5yd, backpedal to start. Never cross your feet on the shuffles. Face forward the entire time.</div>
+    </div>
+    <div class="skill-body">
+      <div class="skill-chk-row"><div><div>Left first - Rep 1</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="tT-1" oninput="saveTime('T',1,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+      <div class="skill-chk-row"><div><div>Right first - Rep 1</div></div><div style="display:flex;align-items:center;gap:8px"><input class="time-input" type="text" placeholder="0.00s" id="tT-2" oninput="saveTime('T',2,this.value)"><button class="sk-btn" onclick="toggleSkill(this)"></button></div></div>
+      <div class="skill-chk-row"><div><div>Wks 5+: Additional reps</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+    </div>
+  </div>
+
+  <div class="block-lbl">Explosive Power</div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Box Jump <span class="pr-badge" id="pr-thu-box">🏆 PR</span></div>
+      <div class="ex-target">4×4 reps · Log height and reps · Full reset between</div>
+      <div class="ex-note">Start at 36" (current). Land softly — absorb the landing with bent knees. Step down, don't jump down. Add height when landing feels easy.</div>
+    </div>
+    <div class="set-log" id="sl-thu-box"><div class="col-hdr"><span>SET</span><span>HEIGHT</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Broad Jump <span class="pr-badge" id="pr-thu-broad">🏆 PR</span></div>
+      <div class="ex-target">4×3 reps · Measure distance · Log best</div>
+      <div class="ex-note">Two-foot takeoff, swing arms back then explode forward. Stick the landing. Measures lower body power — key metric for position evaluation.</div>
+    </div>
+    <div class="set-log" id="sl-thu-broad"><div class="col-hdr"><span>SET</span><span>DIST"</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="cond-box">
+    <div class="cond-title">Conditioning</div>
+    <div class="cond-row"><div><div>Hill Sprints or Resisted Sprint</div><div class="cd">6×20 yards · Walk back recovery</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cond-row"><div><div>Ladder Footwork</div><div class="cd">5 min — any pattern, just stay sharp</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+
+  <div class="cardio-block">
+    <div class="cb-title">🏃 Cardio — 20 Min</div>
+    <div class="cb-row"><div><div>Bike or elliptical — easy</div><div class="crd">Recovery cardio after sprint day · Keep it low intensity</div></div><button class="cb-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cb-row"><div><div>Alt: 20 min jog with Dad</div><div class="crd">Easy conversational pace — bond time</div></div><button class="cb-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+
+  <span class="notes-label">Session Notes</span>
+  <textarea class="notes-area" id="notes-thu" placeholder="Best 40 time this week? Any drill improvements?"></textarea>
+</div>
+
+<!-- ═══ FRIDAY — POWER + FOOTBALL SKILLS ═══ -->
+<div id="day-fri" style="display:none">
+  <div class="day-hdr">
+    <div><div class="dh-label">Friday · Day 3</div><div class="dh-name">POWER + SKILLS</div></div>
+    <div><div class="dh-dur">~55 min</div><button class="mark-btn" id="mb-fri" onclick="markDay('fri')">MARK DONE</button></div>
+  </div>
+
+  <div class="wu-box">
+    <div class="wu-title">⚡ Power Warmup — 8 Min</div>
+    <div class="wu-item">Jump rope 2 min — any rhythm</div>
+    <div class="wu-item">Walking lunges 2×10 steps</div>
+    <div class="wu-item">Lateral bound 3×5 each side</div>
+    <div class="wu-item">Med ball chest throw against wall 2×8</div>
+    <div class="wu-item">2 sprint stride-outs at 80% before skill work</div>
+  </div>
+
+  <div class="block-lbl">Power Lifts</div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Romanian Deadlift (DB) <span class="pr-badge" id="pr-fri-rdl">🏆 PR</span></div>
+      <div class="ex-target">3×8–10 reps · DBs · Hip hinge focus</div>
+      <div class="ex-note">Feel the hamstring stretch at the bottom. DBs keep it safe for young athletes. Builds the posterior chain that drives your sprint speed and jumping power.</div>
+    </div>
+    <div class="set-log" id="sl-fri-rdl"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">DB Push Press <span class="pr-badge" id="pr-fri-pp">🏆 PR</span></div>
+      <div class="ex-target">3×6–8 reps · Moderate DBs</div>
+      <div class="ex-note">Slight knee dip then drive overhead — uses legs to initiate, teaches full body power. This builds the explosive strength that transfers to blocking and tackling.</div>
+    </div>
+    <div class="set-log" id="sl-fri-pp"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="ex-card">
+    <div class="ex-hdr">
+      <div class="ex-name">Trap Bar / Hex Bar Jump Squat <span class="pr-badge" id="pr-fri-js">🏆 PR</span></div>
+      <div class="ex-target">3×5 reps · Light bar only · Maximum intent</div>
+      <div class="ex-note">Galpin's power domain — the bar weight doesn't matter, the explosive INTENT does. Jump as high as possible on every rep. This is your #1 speed and power builder.</div>
+    </div>
+    <div class="set-log" id="sl-fri-js"><div class="col-hdr"><span>SET</span><span>LBS</span><span>REPS</span><span>PREV</span><span>✓</span></div></div>
+  </div>
+
+  <div class="block-lbl">Football Skill Work</div>
+
+  <div class="skill-card">
+    <div class="skill-hdr">
+      <div class="skill-name">Route Running — Catch Drills</div>
+      <div class="skill-target">75+ catches minimum · All routes</div>
+      <div class="skill-note">Slant, out route, curl, seam, post corner. Hands catch — not body. Turn head early and find the ball before it arrives. Film if possible.</div>
+    </div>
+    <div class="skill-body">
+      <div class="skill-chk-row"><div><div>Slant route ×15</div><div class="sd">3 steps → 45° cut → catch</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>Out route ×15</div><div class="sd">8 yd → hard 90° cut → catch</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>Curl route ×15</div><div class="sd">10 yd → turn back toward QB → catch</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>Seam / post route ×15</div><div class="sd">Full speed, track the ball deep</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>Contested / one-handed ×15</div><div class="sd">Concentration catches at full speed</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+    </div>
+  </div>
+
+  <div class="skill-card">
+    <div class="skill-hdr">
+      <div class="skill-name">Position-Specific Drills</div>
+      <div class="skill-target">Pick 2 based on phase focus</div>
+      <div class="skill-note">Wks 1–4: footwork only. Wks 5–8: add ball. Wks 9–12: full speed. Wks 13–16: game simulation.</div>
+    </div>
+    <div class="skill-body">
+      <div class="skill-chk-row"><div><div>TE — Blocking stance + hand fighting</div><div class="sd">3×2 min against a bag or partner</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>Safety — Break on route / pursuit angle</div><div class="sd">Read the receiver, react, close</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>LB — Read and react drop / blitz</div><div class="sd">Key the QB, drop or rush</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>RB — Vision drill + cut out of handoff</div><div class="sd">Cone weave → find the hole</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+      <div class="skill-chk-row"><div><div>QB — 3-step drop + throw to target</div><div class="sd">Accuracy to cone at 15, 25, 40 yd</div></div><button class="sk-btn" onclick="toggleSkill(this)"></button></div>
+    </div>
+  </div>
+
+  <div class="cond-box">
+    <div class="cond-title">Conditioning Finisher</div>
+    <div class="cond-row"><div><div>Sled Push or Sprint-Carry Combo</div><div class="cd">4×25 yards · Full rest between</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cond-row"><div><div>Farmer Carry</div><div class="cd">4×40 yards · Heavy DBs · Grip + core</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+
+  <div class="cardio-block">
+    <div class="cb-title">🏃 Cardio — 20 Min</div>
+    <div class="cb-row"><div><div>Easy jog or walk — Zone 2</div><div class="crd">Friday is high volume — keep cardio recovery-paced</div></div><button class="cb-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cb-row"><div><div>Wks 9–16: Game pace run</div><div class="crd">Simulate a drive — sprint 10 yd, jog back, repeat 20 min</div></div><span style="font-size:11px;color:var(--muted)">upgrade</span></div>
+  </div>
+
+  <span class="notes-label">Session Notes</span>
+  <textarea class="notes-area" id="notes-fri" placeholder="Skill work notes — what clicked, what needs work?"></textarea>
+</div>
+
+<!-- ═══ SATURDAY ═══ -->
+<div id="day-sat" style="display:none">
+  <div class="rest-card">
+    <div class="ri">🏈</div>
+    <h3>SATURDAY — GAME DAY</h3>
+    <p>Scrimmage, team practice, or pick-up football if available. This is the most important day — actually play the game. If no game or practice, do 30 min of skill work and rest.</p>
+  </div>
+  <div class="cond-box" style="margin-top:0">
+    <div class="cond-title">Saturday Activity</div>
+    <div class="cond-row"><div><div>Team practice or scrimmage</div><div class="cd">Play as much real football as possible</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cond-row"><div><div>Skill work (if no practice)</div><div class="cd">50 catches + sprint drills · 30 min</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+    <div class="cond-row"><div><div>Evening run with Dad</div><div class="cd">20 min easy — bond time before departure</div></div><button class="cond-btn" onclick="toggleCond(this)">DONE</button></div>
+  </div>
+</div>
+
+<!-- ═══ SUNDAY ═══ -->
+<div id="day-sun" style="display:none">
+  <div class="rest-card">
+    <div class="ri">💪</div>
+    <h3>SUNDAY — FULL REST</h3>
+    <p>Non-negotiable. At 12, sleep and rest are your biggest performance enhancers. 9+ hours sleep. This is when your body gets stronger from the week's work.</p>
+  </div>
+</div>
+
+</div><!-- end workout tab -->
+
+<!-- ═══ PROGRESS TAB ═══ -->
+<div class="page" id="tab-progress">
+
+  <div class="sec">Stats</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="sv" id="st-s">0</div><div class="sl">This Week</div></div>
+    <div class="stat-card"><div class="sv" id="st-t">0</div><div class="sl">Total Sessions</div></div>
+    <div class="stat-card"><div class="sv" id="st-w">1</div><div class="sl">Current Week</div></div>
+    <div class="stat-card"><div class="sv" id="st-p">0</div><div class="sl">PRs Set</div></div>
+  </div>
+
+  <div class="sec">Starting Baselines</div>
+  <div class="bench-card">
+    <h4>WEEK 1 BASELINES</h4>
+    <div class="bench-row"><span class="bk">Back Squat</span><div><span class="bv">75 lbs</span> <span class="bs">× 6–8</span></div></div>
+    <div class="bench-row"><span class="bk">Bench Press</span><div><span class="bv">65 lbs</span> <span class="bs">× 6–8</span></div></div>
+    <div class="bench-row"><span class="bk">Deadlift</span><div><span class="bv">65 lbs</span> <span class="bs">× 6–8</span></div></div>
+    <div class="bench-row"><span class="bk">Box Jump</span><div><span class="bv">36 inches</span></div></div>
+    <div class="bench-row"><span class="bk">1.5 Mile Run</span><div><span class="bv">20:00</span></div></div>
+    <div class="bench-row"><span class="bk">Bodyweight</span><div><span class="bv">119 lbs</span></div></div>
+  </div>
+
+  <div class="sec">Log Testing Results</div>
+  <div class="baseline-card">
+    <h4>ASSESSMENT ENTRY</h4>
+    <div class="bl-row">
+      <div class="bl-field"><label>Squat (lbs)</label><input class="bl-inp" id="a-sq" type="number" placeholder="—"></div>
+      <div class="bl-field"><label>Bench (lbs)</label><input class="bl-inp" id="a-bn" type="number" placeholder="—"></div>
+    </div>
+    <div class="bl-row">
+      <div class="bl-field"><label>Deadlift (lbs)</label><input class="bl-inp" id="a-dl" type="number" placeholder="—"></div>
+      <div class="bl-field"><label>Box Jump (in)</label><input class="bl-inp" id="a-bj" type="number" placeholder="—"></div>
+    </div>
+    <div class="bl-row">
+      <div class="bl-field"><label>40yd Best (sec)</label><input class="bl-inp" id="a-40" type="text" placeholder="—"></div>
+      <div class="bl-field"><label>Weight (lbs)</label><input class="bl-inp" id="a-wt" type="number" placeholder="—"></div>
+    </div>
+    <div class="bl-row">
+      <div class="bl-field"><label>1.5 Mile (min:sec)</label><input class="bl-inp" id="a-run" type="text" placeholder="—"></div>
+      <div class="bl-field"><label>Week</label><input class="bl-inp" id="a-wk" type="number" placeholder="—" value="1"></div>
+    </div>
+    <button class="save-btn" onclick="saveAssess()">SAVE ASSESSMENT</button>
+  </div>
+
+  <div class="sec">Assessment History</div>
+  <div id="assess-hist"><div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:14px;color:var(--muted);text-align:center">Log assessments above — test every 4 weeks</div></div>
+
+</div>
+
+<!-- ═══ GUIDE TAB ═══ -->
+<div class="page" id="tab-guide">
+
+  <div class="sec">16-Week Phase Map</div>
+  <div class="phase-timeline">
+    <div class="pt-block pt-1"><span class="pt-wk">1–4</span>FOUNDATION</div>
+    <div class="pt-block pt-2"><span class="pt-wk">5–8</span>DEVELOP</div>
+    <div class="pt-block pt-3"><span class="pt-wk">9–12</span>POWER</div>
+    <div class="pt-block pt-4"><span class="pt-wk">13–16</span>PEAK</div>
+  </div>
+
+  <div class="g-card">
+    <h3>GALPIN'S 9 DOMAINS — YOUR TRAINING</h3>
+    <div class="g-item"><span class="gi">SKILL</span>Every session — movement quality, route running, JJ technique. Always first.</div>
+    <div class="g-item"><span class="gi">SPEED</span>Thursday sprints. 40-yard dash. This peaks weeks 9–16.</div>
+    <div class="g-item"><span class="gi">POWER</span>Box jumps, broad jumps, jump squats, Friday power day. Weeks 5–16.</div>
+    <div class="g-item"><span class="gi">STRENGTH</span>Tuesday squats, bench, deadlift. Add weight every session you can.</div>
+    <div class="g-item"><span class="gi">HYPERT</span>You're 12 — you'll grow fast from any consistent lifting. Don't chase size yet.</div>
+    <div class="g-item"><span class="gi">M.END</span>Push-ups, planks, sprint conditioning. Linebacker and Safety demand this.</div>
+    <div class="g-item"><span class="gi">ANAER</span>Sprint finishers, sled work, JJ sparring rounds. High intensity short bursts.</div>
+    <div class="g-item"><span class="gi">VO2</span>1.5 mile runs — test monthly. Saturday game activity. JJ rolling rounds.</div>
+    <div class="g-item"><span class="gi">ENDUR</span>Evening walks/runs with Dad. Zone 2 base. 20–30 min easy pace.</div>
+  </div>
+
+  <div class="g-card">
+    <h3>WEEKLY SCHEDULE</h3>
+    <div class="i-row"><span class="ik" style="color:var(--blue)">Monday</span><span class="iv">Jiu Jitsu — Gi · Stay for sister's class</span></div>
+    <div class="i-row"><span class="ik" style="color:var(--g1)">Tuesday</span><span class="iv">Strength — Squat / Bench / Deadlift</span></div>
+    <div class="i-row"><span class="ik" style="color:var(--blue)">Wednesday</span><span class="iv">Jiu Jitsu — No-Gi · Stay for sister's class</span></div>
+    <div class="i-row"><span class="ik" style="color:var(--g1)">Thursday</span><span class="iv">Speed + Agility — 40s / Cone drills / Jumps</span></div>
+    <div class="i-row"><span class="ik" style="color:var(--g1)">Friday</span><span class="iv">Power + Football Skills — Routes / Drills</span></div>
+    <div class="i-row"><span class="ik" style="color:var(--orange)">Saturday</span><span class="iv">Game / Practice / Skill work</span></div>
+    <div class="i-row"><span class="ik">Sunday</span><span class="iv">Full rest — 9+ hours sleep</span></div>
+  </div>
+
+  <div class="g-card">
+    <h3>PROGRESSION RULES</h3>
+    <div class="g-item"><span class="gi">LIFTS</span>Hit top of rep range on ALL sets → add 5 lbs next session. Don't rush it.</div>
+    <div class="g-item"><span class="gi">SPEED</span>Log every 40 time. Improvement comes from mechanics first, not effort.</div>
+    <div class="g-item"><span class="gi">JUMPS</span>Add box height when you land easily and consistently. Step down every rep.</div>
+    <div class="g-item"><span class="gi">SKILLS</span>75+ ball catches every Friday. Reps build hands. No shortcuts.</div>
+    <div class="g-item"><span class="gi">JJ</span>Tap early, tap often. You're learning — getting tapped means you're rolling. Keep going.</div>
+  </div>
+
+  <div class="g-card">
+    <h3>COACHING CUES — REMEMBER THESE</h3>
+    <div class="i-row"><span class="ik">40-yard start</span><span class="iv">Stay LOW first 10 yards — don't stand up early</span></div>
+    <div class="i-row"><span class="ik">Arms sprinting</span><span class="iv">90 degrees, drive from hip to chin, don't cross body</span></div>
+    <div class="i-row"><span class="ik">Squat</span><span class="iv">Chest up, knees track toes, full depth every rep</span></div>
+    <div class="i-row"><span class="ik">Catching</span><span class="iv">Turn head early, hands catch — never body catch</span></div>
+    <div class="i-row"><span class="ik">Cone drills</span><span class="iv">Stay low in cuts — standing up kills your time</span></div>
+    <div class="i-row"><span class="ik">Sleep</span><span class="iv">9+ hours — this is your #1 performance tool at 12</span></div>
+  </div>
+
+  <div class="g-card">
+    <h3>NUTRITION BASICS FOR YOUNG ATHLETES</h3>
+    <div class="g-item"><span class="gi">PROTEIN</span>0.7–1g per lb bodyweight — chicken, eggs, beef, milk, Greek yogurt. Every meal.</div>
+    <div class="g-item"><span class="gi">CARBS</span>Eat plenty — rice, oats, potatoes, fruit. You're growing and training. Don't restrict.</div>
+    <div class="g-item"><span class="gi">WATER</span>Drink water constantly. If you're thirsty, you're already behind. Half bodyweight in oz daily.</div>
+    <div class="g-item"><span class="gi">TIMING</span>Eat within 30 min after training. Protein + carbs. Chocolate milk works fine post-workout.</div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+var CW=parseInt(localStorage.getItem('zp_wk')||'1');
+var DONE=JSON.parse(localStorage.getItem('zp_done_'+CW)||'[]');
+var TOTAL=parseInt(localStorage.getItem('zp_total')||'0');
+var PRS=parseInt(localStorage.getItem('zp_prs')||'0');
+var ASSESS=JSON.parse(localStorage.getItem('zp_assess')||'[]');
+
+// exercises with weight/rep tracking
+var EXS=[
+  ['tue','squat',3],['tue','bench',3],['tue','dl',3],
+  ['tue','row',3],['tue','pu',3],
+  ['thu','box',4],['thu','broad',4],
+  ['fri','rdl',3],['fri','pp',3],['fri','js',3],
+];
+
+// ── SET BUILDING ──────────────────────────────────────────────────────────────
+function buildAllSets(){EXS.forEach(function(e){buildSets(e[0],e[1],e[2]);});}
+
+function buildSets(day,ex,n){
+  var el=document.getElementById('sl-'+day+'-'+ex);
+  if(!el)return;
+  var prev=getPrev(day,ex);
+  for(var i=1;i<=n;i++){appendSetRow(el,day,ex,i,prev);}
+  var ab=document.createElement('button');
+  ab.className='add-set';ab.textContent='+ ADD SET';
+  ab.setAttribute('data-day',day);ab.setAttribute('data-ex',ex);
+  ab.onclick=function(){
+    var d=this.getAttribute('data-day'),e=this.getAttribute('data-ex');
+    var rows=document.getElementById('sl-'+d+'-'+e).querySelectorAll('.set-r').length;
+    appendSetRow(document.getElementById('sl-'+d+'-'+e),d,e,rows+1,getPrev(d,e));
+    document.getElementById('sl-'+d+'-'+e).appendChild(this);
+  };
+  el.appendChild(ab);
+  restoreVals(day,ex);
+}
+
+function appendSetRow(el,day,ex,i,prev){
+  var pw=(prev&&prev[i-1])?prev[i-1].w:'';
+  var pr=(prev&&prev[i-1])?prev[i-1].r:'';
+  var pt=(pw&&pr)?pw+'×'+pr:'—';
+  var r=document.createElement('div');r.className='set-r';r.setAttribute('data-set',i);
+  r.innerHTML='<div class="s-num">S'+i+'</div>'+
+    '<input class="s-input" type="number" placeholder="—" data-day="'+day+'" data-ex="'+ex+'" data-set="'+i+'" data-f="w" oninput="onInput(this)">'+
+    '<input class="s-input" type="number" placeholder="—" data-day="'+day+'" data-ex="'+ex+'" data-set="'+i+'" data-f="r" oninput="onInput(this)">'+
+    '<div class="prev-col'+(pt!=='—'?'':' empty')+'">'+pt+'</div>'+
+    '<button class="s-done" onclick="this.classList.toggle(\'done\')">✓</button>';
+  var addBtn=el.querySelector('.add-set');
+  if(addBtn)el.insertBefore(r,addBtn);else el.appendChild(r);
+}
+
+function onInput(inp){
+  var d=inp.getAttribute('data-day'),e=inp.getAttribute('data-ex'),
+      s=inp.getAttribute('data-set'),f=inp.getAttribute('data-f');
+  var key='zp_w'+CW+'_'+d+'_'+e;
+  var data=JSON.parse(localStorage.getItem(key)||'{}');
+  if(!data[s])data[s]={};
+  data[s][f]=inp.value;
+  localStorage.setItem(key,JSON.stringify(data));
+  checkPR(d,e);
+}
+
+function restoreVals(day,ex){
+  var key='zp_w'+CW+'_'+day+'_'+ex;
+  var data=JSON.parse(localStorage.getItem(key)||'{}');
+  Object.keys(data).forEach(function(s){
+    var wi=document.querySelector('[data-day="'+day+'"][data-ex="'+ex+'"][data-set="'+s+'"][data-f="w"]');
+    var ri=document.querySelector('[data-day="'+day+'"][data-ex="'+ex+'"][data-set="'+s+'"][data-f="r"]');
+    if(wi&&data[s].w)wi.value=data[s].w;
+    if(ri&&data[s].r)ri.value=data[s].r;
+  });
+}
+
+function getPrev(day,ex){
+  if(CW<=1)return null;
+  var data=JSON.parse(localStorage.getItem('zp_w'+(CW-1)+'_'+day+'_'+ex)||'{}');
+  if(!Object.keys(data).length)return null;
+  return Object.keys(data).sort(function(a,b){return a-b;}).map(function(k){return data[k];});
+}
+
+function checkPR(day,ex){
+  var key='zp_w'+CW+'_'+day+'_'+ex;
+  var data=JSON.parse(localStorage.getItem(key)||'{}');
+  var best=0;
+  Object.values(data).forEach(function(s){if(s.w&&parseFloat(s.w)>best)best=parseFloat(s.w);});
+  if(!best)return;
+  var allBest=0;
+  for(var w=1;w<CW;w++){
+    var pd=JSON.parse(localStorage.getItem('zp_w'+w+'_'+day+'_'+ex)||'{}');
+    Object.values(pd).forEach(function(s){if(s.w&&parseFloat(s.w)>allBest)allBest=parseFloat(s.w);});
+  }
+  var badge=document.getElementById('pr-'+day+'-'+ex);
+  if(badge){
+    if(best>allBest&&allBest>0){
+      badge.classList.add('show');
+      var prk='zp_prset_'+day+'_'+ex+'_w'+CW;
+      if(!localStorage.getItem(prk)){localStorage.setItem(prk,'1');PRS++;localStorage.setItem('zp_prs',PRS);document.getElementById('st-p').textContent=PRS;}
+    } else badge.classList.remove('show');
+  }
+}
+
+// ── TIMING SAVES ──────────────────────────────────────────────────────────────
+function save40(rep,val){localStorage.setItem('zp_w'+CW+'_40_'+rep,val);}
+function saveTime(drill,rep,val){localStorage.setItem('zp_w'+CW+'_'+drill+'_'+rep,val);}
+function restore40(){for(var i=1;i<=4;i++){var v=localStorage.getItem('zp_w'+CW+'_40_'+i);var el=document.getElementById('t40-'+i);if(el&&v)el.value=v;}}
+function restore515(){for(var i=1;i<=4;i++){var v=localStorage.getItem('zp_w'+CW+'_515_'+i);var el=document.getElementById('t515-'+i);if(el&&v)el.value=v;}}
+function restoreT(){for(var i=1;i<=2;i++){var v=localStorage.getItem('zp_w'+CW+'_T_'+i);var el=document.getElementById('tT-'+i);if(el&&v)el.value=v;}}
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function toggleCond(btn){btn.classList.toggle('done');btn.textContent=btn.classList.contains('done')?'✓ DONE':'DONE';}
+function toggleSkill(btn){btn.classList.toggle('done');btn.textContent=btn.classList.contains('done')?'✓':'';}
+
+function markDay(dayId){
+  var mb=document.getElementById('mb-'+dayId);
+  var tab=document.getElementById('dtb-'+dayId);
+  var idx=DONE.indexOf(dayId);
+  if(idx>-1){
+    DONE.splice(idx,1);if(mb){mb.classList.remove('done');mb.textContent='MARK DONE';}
+    if(tab)tab.classList.remove('done-d');TOTAL=Math.max(0,TOTAL-1);
+  } else {
+    if(DONE.indexOf(dayId)===-1)DONE.push(dayId);
+    if(mb){mb.classList.add('done');mb.textContent='✓ DONE';}
+    if(tab)tab.classList.add('done-d');TOTAL++;
+  }
+  localStorage.setItem('zp_done_'+CW,JSON.stringify(DONE));
+  localStorage.setItem('zp_total',TOTAL);
+  document.getElementById('st-s').textContent=DONE.length;
+  document.getElementById('st-t').textContent=TOTAL;
+  updateProgress();
+}
+
+var ALL_DAYS=['mon','tue','wed','thu','fri','sat','sun'];
+function showDay(dayId,btn){
+  ALL_DAYS.forEach(function(d){var el=document.getElementById('day-'+d);if(el)el.style.display='none';});
+  document.querySelectorAll('.dbt').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById('day-'+dayId);if(el)el.style.display='block';
+  btn.classList.add('active');
+}
+
+function showTab(name,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-'+name).classList.add('active');el.classList.add('active');
+}
+
+function changeWeek(dir){
+  CW=Math.max(1,Math.min(16,CW+dir));
+  localStorage.setItem('zp_wk',CW);
+  DONE=JSON.parse(localStorage.getItem('zp_done_'+CW)||'[]');
+  updateWeekLabel();updateProgress();
+  document.getElementById('st-w').textContent=CW;
+  document.getElementById('st-s').textContent=DONE.length;
+  ['tue','thu','fri'].forEach(function(d){
+    var t=document.getElementById('dtb-'+d),m=document.getElementById('mb-'+d);
+    if(DONE.includes(d)){if(t)t.classList.add('done-d');if(m){m.classList.add('done');m.textContent='✓ DONE';}}
+    else{if(t)t.classList.remove('done-d');if(m){m.classList.remove('done');m.textContent='MARK DONE';}}
+  });
+  EXS.forEach(function(e){
+    var el=document.getElementById('sl-'+e[0]+'-'+e[1]);
+    if(el){el.querySelectorAll('.set-r').forEach(function(r){r.remove();});var ab=el.querySelector('.add-set');if(ab)ab.remove();}
+    buildSets(e[0],e[1],e[2]);
+  });
+  restore40();restore515();restoreT();
+}
+
+function updateWeekLabel(){
+  document.getElementById('wk-lbl').textContent='WEEK '+CW;
+  var phases={1:'FOUNDATION',2:'FOUNDATION',3:'FOUNDATION',4:'FOUNDATION',
+    5:'DEVELOPMENT',6:'DEVELOPMENT',7:'DEVELOPMENT',8:'DEVELOPMENT',
+    9:'POWER BUILD',10:'POWER BUILD',11:'POWER BUILD',12:'POWER BUILD',
+    13:'PEAK PHASE',14:'PEAK PHASE',15:'PEAK PHASE',16:'ASSESSMENT'};
+  document.getElementById('ph-lbl').textContent=phases[CW]||'ADVANCED';
+}
+
+function updateProgress(){
+  var active=['mon','tue','wed','thu','fri'];
+  var done=active.filter(function(d){return DONE.includes(d);}).length;
+  var pct=(done/5)*100;
+  document.getElementById('wpf').style.width=pct+'%';
+  document.getElementById('wpc').textContent=done+' / 5 active days';
+
+  var de=document.getElementById('wpd');de.innerHTML='';
+  [{id:'mon',l:'MON',type:'jj'},{id:'tue',l:'TUE',type:'lift'},
+   {id:'wed',l:'WED',type:'jj'},{id:'thu',l:'THU',type:'lift'},
+   {id:'fri',l:'FRI',type:'lift'},{id:'sat',l:'SAT',type:'rest'},
+   {id:'sun',l:'SUN',type:'rest'}
+  ].forEach(function(d){
+    var dot=document.createElement('div');dot.className='wp-dot';
+    if(d.type==='rest')dot.classList.add('rest');
+    else if(d.type==='jj'&&DONE.includes(d.id))dot.classList.add('done');
+    else if(d.type==='jj')dot.classList.add('jj');
+    else if(DONE.includes(d.id))dot.classList.add('done');
+    dot.innerHTML='<span>'+d.l+'</span>';de.appendChild(dot);
+  });
+}
+
+// ── ASSESSMENT ────────────────────────────────────────────────────────────────
+function saveAssess(){
+  var entry={
+    sq:document.getElementById('a-sq').value,
+    bn:document.getElementById('a-bn').value,
+    dl:document.getElementById('a-dl').value,
+    bj:document.getElementById('a-bj').value,
+    d40:document.getElementById('a-40').value,
+    wt:document.getElementById('a-wt').value,
+    run:document.getElementById('a-run').value,
+    wk:document.getElementById('a-wk').value||CW,
+    date:new Date().toLocaleDateString()
+  };
+  ASSESS.unshift(entry);
+  localStorage.setItem('zp_assess',JSON.stringify(ASSESS));
+  ['sq','bn','dl','bj','40','wt','run'].forEach(function(f){var el=document.getElementById('a-'+f);if(el)el.value='';});
+  renderAssess();
+}
+
+function renderAssess(){
+  var el=document.getElementById('assess-hist');
+  if(!ASSESS.length){el.innerHTML='<div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:14px;color:var(--muted);text-align:center">Log assessments above — test every 4 weeks</div>';return;}
+  el.innerHTML=ASSESS.map(function(a){
+    return '<div class="hist-entry">'+
+      '<div class="he-date">Week '+a.wk+' · '+a.date+'</div>'+
+      '<div class="he-vals">'+
+      (a.sq?'<div><div class="hv">'+a.sq+'</div><div class="hk">SQUAT</div></div>':'')+
+      (a.bn?'<div><div class="hv">'+a.bn+'</div><div class="hk">BENCH</div></div>':'')+
+      (a.dl?'<div><div class="hv">'+a.dl+'</div><div class="hk">DEADLIFT</div></div>':'')+
+      (a.bj?'<div><div class="hv">'+a.bj+'"</div><div class="hk">BOX JUMP</div></div>':'')+
+      (a.d40?'<div><div class="hv">'+a.d40+'s</div><div class="hk">40 YD</div></div>':'')+
+      (a.wt?'<div><div class="hv">'+a.wt+'</div><div class="hk">LBS</div></div>':'')+
+      (a.run?'<div><div class="hv">'+a.run+'</div><div class="hk">1.5MI</div></div>':'')+
+      '</div></div>';
+  }).join('');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+updateWeekLabel();updateProgress();
+document.getElementById('st-t').textContent=TOTAL;
+document.getElementById('st-w').textContent=CW;
+document.getElementById('st-p').textContent=PRS;
+document.getElementById('st-s').textContent=DONE.length;
+['tue','thu','fri'].forEach(function(d){
+  if(DONE.includes(d)){
+    var t=document.getElementById('dtb-'+d);if(t)t.classList.add('done-d');
+    var m=document.getElementById('mb-'+d);if(m){m.classList.add('done');m.textContent='✓ DONE';}
+  }
+});
+if(DONE.includes('mon')||DONE.includes('wed')){
+  ['mon','wed'].forEach(function(d){if(DONE.includes(d)){var t=document.getElementById('dtb-'+d);if(t)t.classList.add('done-d');}});
+}
+renderAssess();
+buildAllSets();
+restore40();restore515();restoreT();
+</script>
+</body>
+</html>
